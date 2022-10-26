@@ -5,7 +5,18 @@ from flask_login import current_user
 
 auth = Blueprint('auth', __name__)
 
-@auth.route('/sign-up',  methods=['GET', 'POST'])
+
+@auth.route('/admin-sign-in', methods=['GET', 'POST'])
+def sign_in():
+    return render_template("admin_sign_in.html", boolean=True)
+
+
+@auth.route('/logout')
+def logout():
+    return "<p>logout</p>"
+
+
+@auth.route('/questionnaire',  methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -30,14 +41,16 @@ def sign_up():
         elif len(role) < 2:
             flash('Role must be greater than 1 character.', category='error')
         elif len(reports_to) < 2:
-            flash('Who you report to must be greater than 1 character.', category='error')
+            flash('Who you report to must be greater than 1 character.',
+                  category='error')
         elif len(fun_fact) < 2:
             flash('Fun-fact must be greater than 1 character.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, last_name=last_name, title=title, role=role, reports_to=reports_to, fun_fact=fun_fact)
+            new_user = User(email=email, first_name=first_name, last_name=last_name,
+                            title=title, role=role, reports_to=reports_to, fun_fact=fun_fact)
             db.session.add(new_user)
             db.session.commit()
             flash('Questionarrie Completed!', category='success')
             return redirect(url_for('views.home'))
 
-    return render_template("sign_up.html", user=current_user)
+    return render_template("questionnaire.html", user=current_user)
